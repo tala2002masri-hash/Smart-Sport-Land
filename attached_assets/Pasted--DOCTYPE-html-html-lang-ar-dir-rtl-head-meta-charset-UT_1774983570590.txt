@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>SPORT LAND GYM | ULTIMATE MANAGEMENT SYSTEM v4.1</title>
+    <style>
+        :root { --bg: #050505; --neon: #ccff00; --card: #121212; --danger: #ff3333; --success: #00ff88; --accent: #00e5ff; --gray: #777; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; transition: 0.3s; }
+        body { background: var(--bg); color: #fff; margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar */
+        .sidebar { width: 280px; background: #000; border-left: 1px solid #222; display: flex; flex-direction: column; padding: 20px; overflow-y: auto; }
+        .logo { text-align: center; color: var(--neon); font-size: 1.6rem; font-weight: 900; border-bottom: 3px solid var(--neon); padding-bottom: 10px; margin-bottom: 20px; }
+        .menu-btn { padding: 14px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; color: var(--gray); font-weight: bold; border: 1px solid transparent; text-align: right; background: none; width: 100%; font-size: 14px; display: flex; align-items: center; gap: 10px; }
+        .menu-btn:hover, .menu-btn.active { background: #1a1a1a; color: var(--neon); border-color: var(--neon); }
+
+        .main { flex: 1; overflow-y: auto; padding: 30px; background: radial-gradient(circle at top right, #181818, #050505); }
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* UI Components */
+        .card { background: var(--card); border: 1px solid #222; padding: 25px; border-radius: 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
+        input, select, textarea { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; width: 100%; margin-top: 8px; outline: none; font-size: 14px; }
+        input:focus { border-color: var(--neon); box-shadow: 0 0 10px rgba(204,255,0,0.2); }
+        .btn-neon { background: var(--neon); color: #000; border: none; padding: 15px; border-radius: 10px; font-weight: 900; cursor: pointer; width: 100%; margin-top: 15px; font-size: 16px; }
+        .btn-neon:active { transform: scale(0.98); }
+        
+        /* Profile Image */
+        .pic-container { text-align: center; margin-bottom: 20px; }
+        .pic-circle { width: 130px; height: 130px; border-radius: 50%; border: 3px dashed var(--neon); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; background: #000; position: relative; }
+        .pic-circle img { width: 100%; height: 100%; object-fit: cover; }
+        .pic-circle:hover { border-style: solid; box-shadow: 0 0 20px var(--neon); }
+
+        /* Suit Management */
+        .suit-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+        .suit-box { padding: 15px; border-radius: 12px; border: 1px solid #333; text-align: center; cursor: pointer; font-weight: bold; }
+        .st-avail { color: var(--success); border-color: var(--success); background: rgba(0,255,136,0.05); }
+        .st-booked { color: var(--accent); border-color: var(--accent); background: rgba(0,229,255,0.05); }
+        .st-broken { color: var(--danger); border-color: var(--danger); background: rgba(255,51,51,0.05); opacity: 0.6; }
+
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; margin-top: 15px; }
+        th { color: var(--gray); text-align: right; padding: 10px; font-size: 12px; }
+        td { background: #1a1a1a; padding: 15px; font-size: 14px; }
+        td:first-child { border-radius: 0 12px 12px 0; }
+        td:last-child { border-radius: 12px 0 0 12px; }
+
+        /* Dynamic Portrait Styling */
+        #print-zone { background: #fff; color: #000; border-radius: 15px; overflow: hidden; display: none; }
+        #print-zone.visible { display: block; animation: fadeIn 0.3s; }
+
+        @media print {
+            body { background: #fff !important; color: #000 !important; }
+            .sidebar, .no-print, .btn-neon, label, input, select { display: none !important; }
+            .main { padding: 0; background: none; }
+            .section { display: none !important; }
+            .section.active { display: block !important; }
+            #print-zone, #print-zone-fin { display: block !important; visibility: visible !important; width: 100%; position: absolute; top: 0; left: 0; }
+            table { color: #000 !important; border: 1px solid #eee; }
+            td { background: #fff !important; border-bottom: 1px solid #eee; color: #000 !important; }
+            th { color: #666 !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar no-print">
+        <div class="logo">SPORT LAND</div>
+        <button class="menu-btn active" onclick="showSection('dash')">📊 الرادار (المتابعة الذكية)</button>
+        <button class="menu-btn" onclick="showSection('reg')">👤 تسجيل عضو جديد</button>
+        <button class="menu-btn" onclick="showSection('lab')">🔬 قياسات المشترك AI</button>
+        <button class="menu-btn" onclick="showSection('prog')">🍎 خطة الغذاء والتدريب</button>
+        <button class="menu-btn" onclick="showSection('book')">📅 الحجز والمخزون</button>
+        <button class="menu-btn" onclick="showSection('staff')">👔 الموظفين والمهام</button>
+        <button class="menu-btn" onclick="showSection('fin')">💰 التقارير المالية</button>
+        <button class="menu-btn" onclick="showSection('off')">🎁 إدارة العروض</button>
+        <button class="menu-btn" onclick="showSection('port')">📂 الملف الشامل</button>
+    </div>
+
+    <div class="main">
+        <div id="dash" class="section active">
+            <div class="grid-3">
+                <div class="card" style="border-top: 5px solid var(--danger);">
+                    <h3>💸 ديون المشتركين</h3>
+                    <div id="dash-debts" style="max-height: 200px; overflow-y: auto;"></div>
+                </div>
+                <div class="card" style="border-top: 5px solid var(--accent);">
+                    <h3>📅 حجوزات اليوم المفعّلة</h3>
+                    <div id="dash-books" style="max-height: 200px; overflow-y: auto;"></div>
+                </div>
+            </div>
+            <div class="card">
+                <h3>📟 حالة أجهزة EMS الـ 10 (اضغط لتغيير الحالة)</h3>
+                <div id="dash-suits" class="suit-grid"></div>
+            </div>
+        </div>
+
+        <div id="reg" class="section">
+            <div class="card">
+                <div class="pic-container">
+                    <div class="pic-circle" onclick="document.getElementById('m-img-input').click()">
+                        <img id="m-preview" style="display:none">
+                        <span id="m-placeholder">صورة المشترك</span>
+                    </div>
+                    <input type="file" id="m-img-input" hidden onchange="processMImage(this)">
+                </div>
+                <div class="grid-3">
+                    <div><label>الاسم الكامل</label><input type="text" id="m-name" placeholder="الاسم الرباعي"></div>
+                    <div><label>السكن / الهاتف</label><input type="text" id="m-addr" placeholder="العنوان ورقم التواصل"></div>
+                    <div><label>الهدف الرئيسي</label><select id="m-goal"><option>تنشيف دهون</option><option>تضخيم عضلي</option><option>لياقة بدنية</option><option>علاجي / إصابات</option></select></div>
+                </div>
+                <div class="grid-3" style="margin-top:15px;">
+                    <div><label>أمراض مزمنة</label><input type="text" id="m-chr" placeholder="سكري، ضغط، قلب..."></div>
+                    <div><label>إصابات هيكلية</label><input type="text" id="m-bone" placeholder="ديسك، مفاصل، كسور..."></div>
+                    <div><label>اختيار الباقة</label><select id="m-off" onchange="calcDebt()"></select></div>
+                </div>
+                <div class="grid-3" style="margin-top:15px;">
+                    <div><label>المبلغ المدفوع (₪)</label><input type="number" id="m-paid" oninput="calcDebt()" value="0"></div>
+                    <div><label>الدين المتبقي (₪)</label><input type="text" id="m-debt-disp" readonly style="color:var(--danger); font-weight:bold;"></div>
+                    <div><label>المدرب المباشر</label><select id="m-coach"></select></div>
+                </div>
+                <button class="btn-neon" onclick="saveNewMember()">تثبيت الإشتراك بنجاح ✅</button>
+            </div>
+        </div>
+
+        <div id="lab" class="section">
+            <div class="card">
+                <h3>🔬 تتبع القياسات الحيوية والبدنية AI</h3>
+                <select id="l-member" onchange="loadMemberLab()"></select>
+                <h4 style="color:var(--neon); margin-top:25px; border-bottom:1px solid #333; padding-bottom:5px;">📏 القياسات الأساسية</h4>
+                <div class="grid-3">
+                    <input type="number" id="l-h" placeholder="الطول (سم)" oninput="calcAIStats()">
+                    <input type="number" id="l-w" placeholder="الوزن (كغم)" oninput="calcAIStats()">
+                    <input type="number" id="l-age" placeholder="العمر">
+                </div>
+                <h4 style="color:var(--accent); margin-top:25px; border-bottom:1px solid #333; padding-bottom:5px;">📐 قياسات محيط الجسم (سم)</h4>
+                <div class="grid-4">
+                    <div><label>الصدر</label><input type="number" id="l-chest" placeholder="0"></div>
+                    <div><label>الخصر</label><input type="number" id="l-waist" placeholder="0"></div>
+                    <div><label>الأرداف</label><input type="number" id="l-hips" placeholder="0"></div>
+                    <div><label>الفخذ (يمين)</label><input type="number" id="l-thigh-r" placeholder="0"></div>
+                    <div><label>الفخذ (يسار)</label><input type="number" id="l-thigh-l" placeholder="0"></div>
+                    <div><label>الذراع (يمين)</label><input type="number" id="l-arm-r" placeholder="0"></div>
+                    <div><label>الذراع (يسار)</label><input type="number" id="l-arm-l" placeholder="0"></div>
+                </div>
+                <div class="grid-3" style="margin-top:20px; text-align:center;">
+                    <div class="card">BMI <h2 id="r-bmi" style="color:var(--neon)">-</h2></div>
+                    <div class="card">الدهون % <h2 id="r-fat" style="color:var(--danger)">-</h2></div>
+                    <div class="card">العضل % <h2 id="r-mus" style="color:var(--success)">-</h2></div>
+                </div>
+                <button class="btn-neon" onclick="saveMemberLab()">حفظ القياسات التفصيلية وتحديث السجل</button>
+                <div id="lab-history" style="margin-top:20px;">
+                    <h4>📜 سجل التطور التاريخي</h4>
+                    <table style="font-size:12px;">
+                        <thead><tr><th>التاريخ</th><th>الوزن</th><th>الخصر</th><th>الدهون</th><th>BMI</th></tr></thead>
+                        <tbody id="history-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="prog" class="section">
+            <div class="card">
+                <h3>🍎 تفاصيل خطة التغذية والتدريب</h3>
+                <select id="p-member" onchange="loadMemberProg()"></select>
+                <button class="btn-neon" style="background:var(--accent)" onclick="generateSmartProg()">توليد الخطة الذكية ✨</button>
+                <div class="grid-3" style="margin-top:20px;">
+                    <div><label>🥗 نظام التغذية (وجبة بوجبة)</label><textarea id="p-diet" style="height:350px;"></textarea></div>
+                    <div><label>⚡ خطة تدريب EMS (الترددات)</label><textarea id="p-train" style="height:350px;"></textarea></div>
+                </div>
+                <button class="btn-neon" onclick="saveMemberProg()">حفظ وتحديث الخطة</button>
+            </div>
+        </div>
+
+        <div id="book" class="section">
+            <div class="card">
+                <h3>📅 حجز جلسة ذكي (تتبع البدلات)</h3>
+                <div class="grid-3">
+                    <div><label>المشترك</label><select id="b-member" onchange="updateBookView()"></select><div id="b-status" style="margin-top:10px; color:var(--neon); font-size:13px;">الجلسات المتبقية: -</div></div>
+                    <div><label>وقت الحجز</label><input type="datetime-local" id="b-date"></div>
+                    <div><label>البدلة المتوفرة</label><select id="b-suit"></select></div>
+                </div>
+                <button class="btn-neon" onclick="confirmBooking()">تثبيت الموعد وخصم جلسة ✅</button>
+            </div>
+        </div>
+
+        <div id="staff" class="section">
+            <div class="card">
+                <h3>👔 إدارة الطاقم والمهام</h3>
+                <div class="grid-3">
+                    <input type="text" id="s-name" placeholder="اسم الموظف">
+                    <input type="number" id="s-salary" placeholder="الراتب الأساسي">
+                    <input type="text" id="s-task" placeholder="المهمة الوظيفية">
+                    <button class="btn-neon" onclick="addNewStaff()">إضافة</button>
+                </div>
+                <table>
+                    <thead><tr><th>الموظف</th><th>المهمة</th><th>الراتب</th><th>السلف</th><th>الصافي</th><th>إجراء</th></tr></thead>
+                    <tbody id="s-table"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="fin" class="section">
+            <div class="grid-3 no-print">
+                <div class="card">إجمالي الدخل <h2 id="f-total-in" style="color:var(--success)">0</h2></div>
+                <div class="card">إجمالي الصرف <h2 id="f-total-out" style="color:var(--danger)">0</h2></div>
+                <div class="card">الربح الفعلي <h2 id="f-net" style="color:var(--neon)">0</h2></div>
+            </div>
+            <div class="card no-print">
+                <h3>💸 تسجيل نفقات إضافية</h3>
+                <div class="grid-3">
+                    <input type="text" id="fn-desc" placeholder="البيان">
+                    <input type="number" id="fn-amt" placeholder="المبلغ">
+                    <button class="btn-neon" onclick="addExpense()">تسجيل الصرف</button>
+                </div>
+            </div>
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center;" class="no-print">
+                    <h3>📊 سجل المعاملات المالية التفصيلي</h3>
+                    <button class="btn-neon" style="width:120px; font-size:12px;" onclick="window.print()">طباعة التقرير</button>
+                </div>
+                <div id="print-zone-fin">
+                    <h2 class="no-screen" style="display:none; text-align:center; color:#000;">SPORT LAND GYM - تقرير مالي تفصيلي</h2>
+                    <table>
+                        <thead><tr><th>التاريخ</th><th>البيان</th><th>المبلغ</th><th>النوع</th></tr></thead>
+                        <tbody id="f-table"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="off" class="section">
+            <div class="card">
+                <h3>🎁 إدارة عروض النادي</h3>
+                <div class="grid-3">
+                    <input type="text" id="o-name" placeholder="اسم العرض">
+                    <input type="number" id="o-price" placeholder="السعر">
+                    <input type="number" id="o-sess" placeholder="عدد الجلسات">
+                    <button class="btn-neon" onclick="addNewOffer()">إضافة عرض</button>
+                </div>
+                <div id="o-list" class="grid-3" style="margin-top:20px;"></div>
+            </div>
+        </div>
+
+        <div id="port" class="section">
+            <div class="card no-print">
+                <h3>📂 بوابة الملف الشامل للمشترك</h3>
+                <select id="port-select" onchange="renderFullPortal()"></select>
+                <button class="btn-neon" style="width:150px" onclick="window.print()">🖨️ طباعة الملف</button>
+            </div>
+            <div id="print-zone"></div>
+        </div>
+    </div>
+
+    <script>
+        let DB = {
+            m: JSON.parse(localStorage.getItem('sl_m_v4')) || [],
+            s: JSON.parse(localStorage.getItem('sl_s_v4')) || [],
+            o: JSON.parse(localStorage.getItem('sl_o_v4')) || [{id:1, name:'باقة الافتتاح', price:500, sess:12}],
+            f: JSON.parse(localStorage.getItem('sl_f_v4')) || [],
+            b: JSON.parse(localStorage.getItem('sl_b_v4')) || [],
+            suits: JSON.parse(localStorage.getItem('sl_suits_v4')) || [
+                {id:1, size:'S', status:'avail'}, {id:2, size:'S', status:'avail'},
+                {id:3, size:'M', status:'avail'}, {id:4, size:'M', status:'avail'},
+                {id:5, size:'L', status:'avail'}, {id:6, size:'L', status:'avail'},
+                {id:7, size:'XL', status:'avail'}, {id:8, size:'XL', status:'avail'},
+                {id:9, size:'XXL', status:'avail'}, {id:10, size:'XXL', status:'avail'}
+            ]
+        };
+
+        let tempImg = "";
+
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if(event) event.currentTarget.classList.add('active');
+            refreshAll();
+        }
+
+        function refreshAll() {
+            const mOptions = '<option value="">-- اختر مشترك --</option>' + DB.m.map(x=>`<option value="${x.id}">${x.name}</option>`).join('');
+            ['l-member', 'p-member', 'b-member', 'port-select'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.innerHTML = mOptions;
+            });
+            document.getElementById('m-off').innerHTML = DB.o.map(x=>`<option value="${x.price}" data-sess="${x.sess}">${x.name} (${x.price} ₪)</option>`).join('');
+            document.getElementById('m-coach').innerHTML = DB.s.map(x=>`<option>${x.name}</option>`).join('') || '<option>لا يوجد مدربين</option>';
+            document.getElementById('b-suit').innerHTML = DB.suits.filter(s=>s.status=='avail').map(s=>`<option value="${s.id}">بدلة ${s.id} [${s.size}]</option>`).join('');
+            updateDash(); updateSuitsGrid(); updateStaffTable(); updateFinanceUI(); updateOffersList();
+        }
+
+        function saveNewMember() {
+            const name = document.getElementById('m-name').value;
+            if(!name) return alert("يرجى إدخال الاسم");
+            const off = document.getElementById('m-off');
+            const newM = {
+                id: Date.now(), name, addr: document.getElementById('m-addr').value, goal: document.getElementById('m-goal').value,
+                chronic: document.getElementById('m-chr').value, bone: document.getElementById('m-bone').value,
+                total: parseFloat(off.value), paid: parseFloat(document.getElementById('m-paid').value) || 0,
+                rem_sess: parseInt(off.options[off.selectedIndex].getAttribute('data-sess')),
+                coach: document.getElementById('m-coach').value, img: tempImg,
+                lab: {h:0, w:0, bmi:0, fat:0, mus:0, chest:0, waist:0, hips:0, thighR:0, thighL:0, armR:0, armL:0},
+                history: [], diet: "", train: "", date: new Date().toLocaleDateString('ar-EG')
+            };
+            newM.debt = newM.total - newM.paid;
+            DB.m.push(newM);
+            if(newM.paid > 0) DB.f.push({date: new Date().toLocaleString(), desc: `اشتراك جديد: ${newM.name}`, amt: newM.paid, type: 'in'});
+            saveDB(); alert("تمت الإضافة بنجاح ✅");
+            ['m-name', 'm-addr', 'm-chr', 'm-bone', 'm-paid'].forEach(id => document.getElementById(id).value = "");
+            document.getElementById('m-preview').style.display = "none";
+            document.getElementById('m-placeholder').style.display = "block";
+            tempImg = ""; showSection('dash');
+        }
+
+        function confirmBooking() {
+            const mId = document.getElementById('b-member').value;
+            const suitId = document.getElementById('b-suit').value;
+            const bDate = document.getElementById('b-date').value;
+            if(!mId || !suitId || !bDate) return alert("اكمل بيانات الحجز!");
+            const m = DB.m.find(x => x.id == mId);
+            if(m.rem_sess <= 0) return alert("عذراً، لا يوجد جلسات متبقية!");
+            m.rem_sess--;
+            DB.suits.find(s => s.id == suitId).status = 'booked';
+            DB.b.push({mName: m.name, time: bDate, suitId: suitId, suitSize: DB.suits.find(s=>s.id == suitId).size});
+            saveDB(); refreshAll(); alert("تم تثبيت الموعد بنجاح ✅");
+        }
+
+        function toggleSuitStatus(id) {
+            const s = DB.suits.find(x => x.id == id);
+            s.status = (s.status === 'avail') ? 'broken' : 'avail';
+            saveDB(); refreshAll();
+        }
+
+        function calcAIStats() {
+            const h = parseFloat(document.getElementById('l-h').value)/100, w = parseFloat(document.getElementById('l-w').value);
+            if(h > 0 && w > 0) {
+                const bmi = (w / (h*h)).toFixed(1);
+                document.getElementById('r-bmi').innerText = bmi;
+                document.getElementById('r-fat').innerText = (bmi * 1.2).toFixed(1) + "%";
+                document.getElementById('r-mus').innerText = (100 - (bmi * 1.2)).toFixed(1) + "%";
+            }
+        }
+
+        function saveMemberLab() {
+            const m = DB.m.find(x => x.id == document.getElementById('l-member').value);
+            if(!m) return;
+            const entry = {
+                date: new Date().toLocaleDateString('ar-EG'), w: document.getElementById('l-w').value, h: document.getElementById('l-h').value,
+                bmi: document.getElementById('r-bmi').innerText, fat: document.getElementById('r-fat').innerText,
+                waist: document.getElementById('l-waist').value, chest: document.getElementById('l-chest').value,
+                hips: document.getElementById('l-hips').value, thighR: document.getElementById('l-thigh-r').value,
+                thighL: document.getElementById('l-thigh-l').value, armR: document.getElementById('l-arm-r').value,
+                armL: document.getElementById('l-arm-l').value
+            };
+            m.lab = entry; if(!m.history) m.history = []; m.history.push(entry);
+            saveDB(); loadMemberLab(); alert("تم حفظ القياسات ✅");
+        }
+
+        function loadMemberLab() {
+            const m = DB.m.find(x => x.id == document.getElementById('l-member').value);
+            if(!m) return;
+            document.getElementById('l-h').value = m.lab.h || "";
+            document.getElementById('l-w').value = m.lab.w || "";
+            document.getElementById('l-waist').value = m.lab.waist || "";
+            document.getElementById('l-chest').value = m.lab.chest || "";
+            document.getElementById('l-hips').value = m.lab.hips || "";
+            document.getElementById('l-thigh-r').value = m.lab.thighR || "";
+            document.getElementById('l-thigh-l').value = m.lab.thighL || "";
+            document.getElementById('l-arm-r').value = m.lab.armR || "";
+            document.getElementById('l-arm-l').value = m.lab.armL || "";
+            calcAIStats();
+            document.getElementById('history-table-body').innerHTML = (m.history || []).map(h => `<tr><td>${h.date}</td><td>${h.w}</td><td>${h.waist}</td><td>${h.fat}</td><td>${h.bmi}</td></tr>`).reverse().join('');
+        }
+
+        function generateSmartProg() {
+            const m = DB.m.find(x => x.id == document.getElementById('p-member').value);
+            if(!m) return;
+            const cals = (m.lab.w || 70) * 25;
+            document.getElementById('p-diet').value = `خطة التغذية لـ ${m.name}:\n- السعرات: ${cals} kcal\n- بروتين عالي لتناسب تمارين EMS\n- فطور: بيض + كربوهيدرات معقدة\n- غداء: بروتين حيواني + خضار\n- تحذير طبي: ${m.chronic || 'لا يوجد'}`;
+            document.getElementById('p-train').value = `خطة تدريب EMS:\n- التردد: 85Hz لزيادة القوة\n- التركيز: ${m.bone || 'كامل العضلات'}\n- ملاحظة القياسات: الخصر الحالي ${m.lab.waist}سم`;
+        }
+
+        function renderFullPortal() {
+            const m = DB.m.find(x => x.id == document.getElementById('port-select').value);
+            const pz = document.getElementById('print-zone');
+            if(!m) { pz.classList.remove('visible'); return; }
+            pz.innerHTML = `
+                <div style="padding:40px; background:#fff; color:#000; border-radius:15px; border:2px solid #eee;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; border-bottom:4px solid #ccff00; padding-bottom:20px;">
+                        <img src="${m.img || 'https://via.placeholder.com/150'}" style="width:140px; height:140px; border-radius:15px; object-fit:cover; border:3px solid #000;">
+                        <div style="text-align:left;">
+                            <h1 style="margin:0; font-size:28px;">SPORT LAND GYM</h1>
+                            <p style="margin:5px 0; color:#555;">ملف عضوية ملكي الشامل</p>
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; font-size:16px;">
+                        <div>
+                            <p><b>اسم المشترك:</b> ${m.name}</p>
+                            <p><b>الهدف:</b> ${m.goal}</p>
+                            <p><b>المدرب:</b> ${m.coach}</p>
+                        </div>
+                        <div style="background:#f9f9f9; padding:15px; border-radius:10px;">
+                            <p><b>الجلسات المتبقية:</b> <span style="color:#00e5ff; font-weight:bold;">${m.rem_sess}</span></p>
+                            <p><b>الرصيد/الدين المتبقي:</b> <span style="color:#ff3333; font-weight:bold;">${m.debt} ₪</span></p>
+                        </div>
+                    </div>
+                    <hr style="border:1px solid #eee; margin:25px 0;">
+                    <h3 style="color:#000; border-right:5px solid #ccff00; padding-right:10px;">📏 أحدث القياسات (التحليل البدني)</h3>
+                    <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; text-align:center;">
+                        <div style="background:#eee; padding:10px; border-radius:8px;">الوزن: ${m.lab.w}</div>
+                        <div style="background:#eee; padding:10px; border-radius:8px;">الخصر: ${m.lab.waist}</div>
+                        <div style="background:#eee; padding:10px; border-radius:8px;">الصدر: ${m.lab.chest}</div>
+                        <div style="background:#eee; padding:10px; border-radius:8px;">دهون: ${m.lab.fat}</div>
+                    </div>
+                    <hr style="border:1px solid #eee; margin:25px 0;">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:30px;">
+                        <div><h4>🥗 نظام التغذية</h4><p style="white-space:pre-wrap; background:#f5f5f5; padding:15px; border-radius:10px;">${m.diet || 'لم يتم تحديد خطة بعد'}</p></div>
+                        <div><h4>⚡ خطة EMS</h4><p style="white-space:pre-wrap; background:#f5f5f5; padding:15px; border-radius:10px;">${m.train || 'لم يتم تحديد خطة بعد'}</p></div>
+                    </div>
+                </div>`;
+            pz.classList.add('visible');
+        }
+
+        function updateDash() {
+            document.getElementById('dash-debts').innerHTML = DB.m.filter(x=>x.debt > 0).map(x=>`<div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #222;"><span>${x.name}</span><span style="color:var(--danger)">${x.debt} ₪</span></div>`).join('') || "لا ديون";
+            document.getElementById('dash-books').innerHTML = DB.b.map(x=>`<div style="padding:8px; background:#1a1a1a; margin-bottom:5px; border-right:3px solid var(--accent); font-size:12px;">${x.mName} | ${x.time.replace('T',' ')} | بدلة ${x.suitId}</div>`).reverse().slice(0, 8).join('') || "لا حجوزات";
+        }
+        function addNewStaff() { DB.s.push({id:Date.now(), name:document.getElementById('s-name').value, salary:parseFloat(document.getElementById('s-salary').value), task:document.getElementById('s-task').value, loans:0}); saveDB(); refreshAll(); }
+        function addLoan(id) { const amt = parseFloat(prompt("المبلغ:")); if(amt) { const s = DB.s.find(x=>x.id==id); s.loans += amt; DB.f.push({date: new Date().toLocaleString(), desc: `سلفة: ${s.name}`, amt: amt, type: 'out'}); saveDB(); refreshAll(); } }
+        function addNewOffer() { DB.o.push({id:Date.now(), name:document.getElementById('o-name').value, price:parseFloat(document.getElementById('o-price').value), sess:parseInt(document.getElementById('o-sess').value)}); saveDB(); refreshAll(); }
+        function deleteOffer(id) { DB.o = DB.o.filter(x=>x.id != id); saveDB(); refreshAll(); }
+        function addExpense() { const amt = parseFloat(document.getElementById('fn-amt').value); if(amt) { DB.f.push({date: new Date().toLocaleString(), desc: document.getElementById('fn-desc').value, amt: amt, type: 'out'}); saveDB(); refreshAll(); } }
+        function processMImage(input) { const r = new FileReader(); r.onload = e => { document.getElementById('m-preview').src = e.target.result; document.getElementById('m-preview').style.display = "block"; document.getElementById('m-placeholder').style.display = "none"; tempImg = e.target.result; }; r.readAsDataURL(input.files[0]); }
+        function calcDebt() { document.getElementById('m-debt-disp').value = (document.getElementById('m-off').value - (document.getElementById('m-paid').value||0)) + " ₪"; }
+        function saveDB() { localStorage.setItem('sl_m_v4', JSON.stringify(DB.m)); localStorage.setItem('sl_s_v4', JSON.stringify(DB.s)); localStorage.setItem('sl_o_v4', JSON.stringify(DB.o)); localStorage.setItem('sl_f_v4', JSON.stringify(DB.f)); localStorage.setItem('sl_b_v4', JSON.stringify(DB.b)); localStorage.setItem('sl_suits_v4', JSON.stringify(DB.suits)); }
+        function updateSuitsGrid() { document.getElementById('dash-suits').innerHTML = DB.suits.map(s => `<div class="suit-box st-${s.status}" onclick="toggleSuitStatus(${s.id})">${s.size}</div>`).join(''); }
+        function updateStaffTable() { document.getElementById('s-table').innerHTML = DB.s.map(x => `<tr><td>${x.name}</td><td>${x.task}</td><td>${x.salary}</td><td>${x.loans}</td><td>${x.salary-x.loans}</td><td><button onclick="addLoan(${x.id})">سلفة</button></td></tr>`).join(''); }
+        function updateFinanceUI() { const inc = DB.f.filter(x=>x.type=='in').reduce((a,b)=>a+b.amt,0); const exp = DB.f.filter(x=>x.type=='out').reduce((a,b)=>a+b.amt,0); document.getElementById('f-total-in').innerText = inc; document.getElementById('f-total-out').innerText = exp; document.getElementById('f-net').innerText = inc-exp; document.getElementById('f-table').innerHTML = DB.f.map(x=>`<tr><td>${x.date}</td><td>${x.desc}</td><td>${x.amt}</td><td>${x.type}</td></tr>`).reverse().join(''); }
+        function updateOffersList() { document.getElementById('o-list').innerHTML = DB.o.map(x=>`<div class="card">${x.name}<br>${x.price}₪<br><button onclick="deleteOffer(${x.id})">حذف</button></div>`).join(''); }
+        function loadMemberProg() { const m = DB.m.find(x=>x.id == document.getElementById('p-member').value); if(m) { document.getElementById('p-diet').value = m.diet; document.getElementById('p-train').value = m.train; } }
+        function saveMemberProg() { const m = DB.m.find(x=>x.id == document.getElementById('p-member').value); if(m) { m.diet = document.getElementById('p-diet').value; m.train = document.getElementById('p-train').value; saveDB(); alert("حُفظ"); } }
+        function updateBookView() { const m = DB.m.find(x=>x.id == document.getElementById('b-member').value); if(m) document.getElementById('b-status').innerText = "الجلسات المتبقية: " + m.rem_sess; }
+
+        refreshAll();
+    </script>
+</body>
+</html>
