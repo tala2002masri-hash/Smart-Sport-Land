@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import logoImg from "/logo.png";
 import heroBg from "/hero-bg.png";
+import athletesImg from "/athletes.png";
 
 /* ─────────────── TYPES ─────────────── */
 type Screen = 'landing' | 'admin';
@@ -178,79 +179,96 @@ export default function App() {
       </nav>
 
       {/* HERO */}
-      <div style={{position:'relative',height:'100vh',display:'flex',alignItems:'center',overflow:'hidden'}}>
+      <div style={{position:'relative',height:'100vh',display:'flex',alignItems:'center',overflow:'hidden',background:'#000'}}>
 
-        {/* BG image — heavily darkened + blurred so old-UI text is invisible */}
-        <div style={{position:'absolute',inset:0,backgroundImage:`url(${heroBg})`,backgroundSize:'cover',backgroundPosition:'center 30%',backgroundRepeat:'no-repeat',filter:'brightness(0.07) blur(3px) saturate(2)',transform:'scale(1.05)'}}/>
+        {/* ── ATHLETES IMAGE (left side, blended into dark bg) ── */}
+        <img
+          src={athletesImg}
+          alt="EMS Athletes"
+          style={{
+            position:'absolute',
+            bottom:0,
+            left:0,
+            height:'100%',
+            width:'55%',
+            objectFit:'cover',
+            objectPosition:'top center',
+            mixBlendMode:'luminosity',
+            filter:'contrast(1.15) brightness(0.75) saturate(0.6)',
+            zIndex:2,
+          }}
+        />
 
-        {/* Strong solid overlays */}
-        <div style={{position:'absolute',inset:0,background:'rgba(0,0,0,0.55)'}}/>
-        <div style={{position:'absolute',inset:0,background:'linear-gradient(to left, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0.92) 70%, #000 100%)'}}/>
-        <div style={{position:'absolute',inset:0,background:'linear-gradient(to top, #000 0%, transparent 50%)'}}/>
-        <div style={{position:'absolute',top:0,left:0,right:0,height:'120px',background:'linear-gradient(to bottom,#000,transparent)'}}/>
-        {/* Neon tint */}
-        <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse at 60% 50%, rgba(204,255,0,0.04) 0%, transparent 65%)'}}/>
+        {/* Neon green glow behind athletes */}
+        <div style={{position:'absolute',bottom:0,left:0,width:'52%',height:'100%',zIndex:1,background:'radial-gradient(ellipse at 50% 80%, rgba(204,255,0,0.08) 0%, transparent 65%)'}}/>
 
-        {/* Subtle grid */}
-        <div style={{position:'absolute',inset:0,backgroundImage:'linear-gradient(rgba(204,255,0,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(204,255,0,0.025) 1px,transparent 1px)',backgroundSize:'50px 50px',pointerEvents:'none'}}/>
+        {/* Gradient: image fades into black towards content area */}
+        <div style={{position:'absolute',inset:0,zIndex:3,background:'linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 38%, rgba(0,0,0,0.88) 55%, #000 75%)'}}/>
+        {/* Bottom fade */}
+        <div style={{position:'absolute',bottom:0,left:0,right:0,height:'200px',zIndex:3,background:'linear-gradient(to top,#000,transparent)'}}/>
+        {/* Top fade */}
+        <div style={{position:'absolute',top:0,left:0,right:0,height:'120px',zIndex:3,background:'linear-gradient(to bottom,#000,transparent)'}}/>
 
-        {/* ── HERO CONTENT ── */}
-        <div style={{position:'relative',zIndex:10,padding:'80px 6% 120px',width:'100%',maxWidth:'680px',marginRight:'0'}}>
+        {/* Subtle neon scanline grid */}
+        <div style={{position:'absolute',inset:0,zIndex:4,backgroundImage:'linear-gradient(rgba(204,255,0,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(204,255,0,0.02) 1px,transparent 1px)',backgroundSize:'50px 50px',pointerEvents:'none'}}/>
+
+        {/* ── HERO CONTENT (right half — start in RTL) ── */}
+        <div style={{position:'relative',zIndex:10,marginRight:'0',marginLeft:'auto',width:'50%',padding:'80px 5% 130px 3%'}}>
 
           {/* Badge */}
-          <div style={{display:'inline-flex',alignItems:'center',gap:'8px',background:'rgba(204,255,0,0.1)',border:'1px solid rgba(204,255,0,0.35)',borderRadius:'30px',padding:'5px 16px',marginBottom:'24px'}}>
+          <div style={{display:'inline-flex',alignItems:'center',gap:'8px',background:'rgba(204,255,0,0.1)',border:'1px solid rgba(204,255,0,0.4)',borderRadius:'30px',padding:'5px 16px',marginBottom:'20px'}}>
             <span style={{color:'#ccff00',fontSize:'14px'}}>⚡</span>
             <span style={{color:'#ccff00',fontSize:'12px',fontWeight:700,fontFamily:ff}}>لياقة الجيل القادم</span>
           </div>
 
           {/* Headline */}
-          <h1 style={{margin:'0 0 16px',lineHeight:1.05,fontFamily:ff,padding:0}}>
-            <span style={{display:'block',color:'#ffffff',fontSize:'clamp(48px,7.5vw,84px)',fontWeight:900}}>٢٠ دقيقة.</span>
-            <span style={{display:'block',color:'#ccff00',fontSize:'clamp(48px,7.5vw,84px)',fontWeight:900,textShadow:'0 0 50px rgba(204,255,0,0.4)'}}>أقصى تأثير.</span>
+          <h1 style={{margin:'0 0 14px',lineHeight:1.05,fontFamily:ff,padding:0}}>
+            <span style={{display:'block',color:'#ffffff',fontSize:'clamp(44px,6.5vw,78px)',fontWeight:900,letterSpacing:'-1px'}}>٢٠ دقيقة.</span>
+            <span style={{display:'block',color:'#ccff00',fontSize:'clamp(44px,6.5vw,78px)',fontWeight:900,letterSpacing:'-1px',textShadow:'0 0 40px rgba(204,255,0,0.45),0 0 80px rgba(204,255,0,0.2)'}}>أقصى تأثير.</span>
           </h1>
 
           {/* Sub-text */}
-          <p style={{color:'rgba(255,255,255,0.7)',fontSize:'clamp(13px,1.6vw,17px)',lineHeight:1.9,margin:'0 0 32px',fontFamily:ff,maxWidth:'480px'}}>
+          <p style={{color:'rgba(255,255,255,0.68)',fontSize:'clamp(13px,1.5vw,16px)',lineHeight:2,margin:'0 0 28px',fontFamily:ff,maxWidth:'420px'}}>
             يُنشط تحفيز العضلات الكهربائي (EMS) 90% من ألياف عضلاتك في آن واحد.<br/>
             حقق في 20 دقيقة ما يستغرق ساعتين في صالة تقليدية.
           </p>
 
           {/* CTA */}
-          <div style={{display:'flex',gap:'14px',flexWrap:'wrap'}}>
-            <button onClick={()=>setScreen('admin')} style={{background:'linear-gradient(135deg,#ccff00,#aae000)',color:'#000',border:'none',padding:'15px 32px',borderRadius:'10px',fontWeight:900,cursor:'pointer',fontFamily:ff,fontSize:'15px',boxShadow:'0 6px 28px rgba(204,255,0,0.45)',display:'inline-flex',alignItems:'center',gap:'8px'}}>
-              احجز جلسة تجريبية <span style={{fontSize:'18px'}}>←</span>
+          <div style={{display:'flex',gap:'12px',flexWrap:'wrap'}}>
+            <button onClick={()=>setScreen('admin')} style={{background:'linear-gradient(135deg,#ccff00,#aae000)',color:'#000',border:'none',padding:'14px 30px',borderRadius:'10px',fontWeight:900,cursor:'pointer',fontFamily:ff,fontSize:'15px',boxShadow:'0 6px 30px rgba(204,255,0,0.5)',display:'inline-flex',alignItems:'center',gap:'8px',transition:'transform 0.15s'}}>
+              احجز جلسة تجريبية <span>←</span>
             </button>
-            <button onClick={()=>{setSection('off');setScreen('admin');}} style={{background:'rgba(255,255,255,0.06)',color:'#fff',border:'1px solid rgba(255,255,255,0.25)',padding:'15px 32px',borderRadius:'10px',fontWeight:700,cursor:'pointer',fontFamily:ff,fontSize:'15px'}}>
+            <button onClick={()=>{setSection('off');setScreen('admin');}} style={{background:'rgba(255,255,255,0.06)',color:'#fff',border:'1px solid rgba(255,255,255,0.2)',padding:'14px 28px',borderRadius:'10px',fontWeight:700,cursor:'pointer',fontFamily:ff,fontSize:'14px',backdropFilter:'blur(8px)'}}>
               عرض العروض
             </button>
           </div>
         </div>
 
         {/* Heartbeat line */}
-        <div style={{position:'absolute',bottom:'96px',left:0,right:0,zIndex:5,pointerEvents:'none',opacity:0.2}}>
-          <svg viewBox="0 0 1200 60" preserveAspectRatio="none" style={{width:'100%',height:'60px'}}>
+        <div style={{position:'absolute',bottom:'92px',left:0,right:0,zIndex:6,pointerEvents:'none',opacity:0.25}}>
+          <svg viewBox="0 0 1200 60" preserveAspectRatio="none" style={{width:'100%',height:'55px'}}>
             <path d="M0 30 L180 30 L220 30 L250 8 L290 52 L325 10 L358 30 L420 30 L480 30 L520 6 L555 54 L590 12 L622 30 L700 30 L900 30 L1200 30" stroke="#ccff00" strokeWidth="1.5" fill="none"/>
           </svg>
         </div>
 
         {/* Motivational ticker */}
-        <div style={{position:'absolute',bottom:'70px',left:'50%',transform:'translateX(-50%)',zIndex:10,display:'flex',alignItems:'center',gap:'10px'}}>
-          <div style={{height:'1px',width:'50px',background:'rgba(204,255,0,0.35)'}}/>
-          <span style={{color:'rgba(204,255,0,0.75)',fontSize:'12px',fontFamily:ff,fontWeight:600,whiteSpace:'nowrap'}}>{MOTTOS[motoIdx]}</span>
-          <div style={{height:'1px',width:'50px',background:'rgba(204,255,0,0.35)'}}/>
+        <div style={{position:'absolute',bottom:'68px',left:'50%',transform:'translateX(-50%)',zIndex:10,display:'flex',alignItems:'center',gap:'10px',whiteSpace:'nowrap'}}>
+          <div style={{height:'1px',width:'45px',background:'rgba(204,255,0,0.4)'}}/>
+          <span style={{color:'rgba(204,255,0,0.8)',fontSize:'12px',fontFamily:ff,fontWeight:600}}>{MOTTOS[motoIdx]}</span>
+          <div style={{height:'1px',width:'45px',background:'rgba(204,255,0,0.4)'}}/>
         </div>
 
         {/* Stats strip */}
-        <div style={{position:'absolute',bottom:0,left:0,right:0,background:'rgba(0,0,0,0.8)',backdropFilter:'blur(12px)',borderTop:'1px solid rgba(204,255,0,0.12)',padding:'14px 6%',display:'flex',gap:'40px',zIndex:10,flexWrap:'wrap',alignItems:'center'}}>
+        <div style={{position:'absolute',bottom:0,left:0,right:0,zIndex:10,background:'rgba(0,0,0,0.85)',backdropFilter:'blur(14px)',borderTop:'1px solid rgba(204,255,0,0.15)',padding:'13px 6%',display:'flex',gap:'0',alignItems:'center'}}>
           {[
             {val:String(members.length),label:'مشترك نشط',col:'#ccff00'},
             {val:String(suits.filter(s=>s.status==='avail').length),label:'جهاز EMS متاح',col:'#00e5ff'},
             {val:String(bookings.length),label:'جلسة محجوزة',col:'#00ff88'},
             {val:'٢٠',label:'دقيقة للجلسة',col:'#ff69b4'},
-          ].map(s=>(
-            <div key={s.label} style={{display:'flex',alignItems:'center',gap:'10px'}}>
-              <div style={{color:s.col,fontSize:'28px',fontWeight:900,fontFamily:fo,lineHeight:1}}>{s.val}</div>
-              <div style={{color:'#666',fontSize:'11px',fontFamily:ff,lineHeight:1.3}}>{s.label}</div>
+          ].map((s,i)=>(
+            <div key={s.label} style={{display:'flex',alignItems:'center',gap:'10px',flex:1,borderRight:i<3?'1px solid #1a1a1a':'none',paddingRight:i<3?'0':'0',justifyContent:'center'}}>
+              <div style={{color:s.col,fontSize:'26px',fontWeight:900,fontFamily:fo,lineHeight:1,textShadow:`0 0 20px ${s.col}55`}}>{s.val}</div>
+              <div style={{color:'#666',fontSize:'10px',fontFamily:ff,lineHeight:1.4}}>{s.label}</div>
             </div>
           ))}
         </div>
