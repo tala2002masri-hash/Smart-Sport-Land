@@ -157,94 +157,100 @@ export default function App() {
     <div style={{minHeight:'100vh',background:'#050505',fontFamily:ff,direction:'rtl',overflow:'hidden'}}>
 
       {/* NAV BAR */}
-      <nav style={{position:'fixed',top:0,left:0,right:0,zIndex:100,display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 40px',height:'64px',background:'rgba(0,0,0,0.85)',backdropFilter:'blur(12px)',borderBottom:'1px solid rgba(204,255,0,0.15)'}}>
+      <nav style={{position:'fixed',top:0,left:0,right:0,zIndex:100,display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 40px',height:'64px',background:'rgba(0,0,0,0.9)',backdropFilter:'blur(12px)',borderBottom:'1px solid rgba(204,255,0,0.15)'}}>
         {/* Logo + Name */}
         <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
-          <img src={logoImg} alt="logo" style={{width:'40px',height:'40px',borderRadius:'50%',objectFit:'cover',border:'2px solid #ccff00'}}/>
+          <img src={logoImg} alt="logo" style={{width:'38px',height:'38px',borderRadius:'50%',objectFit:'cover',border:'2px solid #ccff00'}}/>
           <div>
-            <div style={{color:'#ccff00',fontFamily:fo,fontSize:'13px',fontWeight:900,letterSpacing:'1px'}}>SMART SPORT LAND</div>
-            <div style={{color:'#555',fontSize:'9px',fontFamily:fo,letterSpacing:'2px'}}>EMS TECHNOLOGY</div>
+            <div style={{color:'#ccff00',fontFamily:fo,fontSize:'12px',fontWeight:900,letterSpacing:'1px'}}>SMART SPORT LAND</div>
+            <div style={{color:'#444',fontSize:'9px',fontFamily:fo,letterSpacing:'2px'}}>EMS TECHNOLOGY</div>
           </div>
         </div>
-        {/* Nav links */}
-        <div style={{display:'flex',gap:'32px',alignItems:'center'}}>
-          {['الرئيسية','الجلسات','العروض'].map(l=>(
-            <span key={l} style={{color:'#ccc',fontSize:'14px',cursor:'pointer',fontWeight:600,fontFamily:ff}}>{l}</span>
-          ))}
-          <span style={{color:'#ccff00',fontSize:'14px',cursor:'pointer',fontWeight:700,fontFamily:ff}}>الرئيسية</span>
+        {/* Nav links - no duplicates */}
+        <div style={{display:'flex',gap:'36px',alignItems:'center'}}>
+          <span style={{color:'#ccff00',fontSize:'14px',cursor:'pointer',fontWeight:700,fontFamily:ff,borderBottom:'2px solid #ccff00',paddingBottom:'2px'}}>الرئيسية</span>
+          <span style={{color:'#999',fontSize:'14px',cursor:'pointer',fontWeight:600,fontFamily:ff}} onClick={()=>setScreen('admin')}>الإدارة</span>
         </div>
         {/* CTA */}
-        <button onClick={()=>setScreen('admin')} style={{background:'linear-gradient(135deg,#ccff00,#aae000)',color:'#000',border:'none',padding:'10px 24px',borderRadius:'8px',fontWeight:900,cursor:'pointer',fontFamily:ff,fontSize:'14px',boxShadow:'0 4px 20px rgba(204,255,0,0.4)'}}>
-          ⚡ الإدارة
+        <button onClick={()=>setScreen('admin')} style={{background:'linear-gradient(135deg,#ccff00,#aae000)',color:'#000',border:'none',padding:'10px 22px',borderRadius:'8px',fontWeight:900,cursor:'pointer',fontFamily:ff,fontSize:'13px',boxShadow:'0 4px 20px rgba(204,255,0,0.35)'}}>
+          ⚡ لوحة الإدارة
         </button>
       </nav>
 
       {/* HERO */}
       <div style={{position:'relative',height:'100vh',display:'flex',alignItems:'center',overflow:'hidden'}}>
-        {/* Background image */}
-        <div style={{position:'absolute',inset:0,backgroundImage:`url(${heroBg})`,backgroundSize:'cover',backgroundPosition:'center',backgroundRepeat:'no-repeat',filter:'brightness(0.45)'}}/>
-        {/* Gradient overlays */}
-        <div style={{position:'absolute',inset:0,background:'linear-gradient(to left, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.85) 100%)'}}/>
-        <div style={{position:'absolute',inset:0,background:'linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%)'}}/>
-        {/* Scanline grid overlay */}
-        <div style={{position:'absolute',inset:0,backgroundImage:'linear-gradient(rgba(204,255,0,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(204,255,0,0.02) 1px, transparent 1px)',backgroundSize:'60px 60px',pointerEvents:'none'}}/>
 
-        {/* Hero content */}
-        <div style={{position:'relative',zIndex:10,padding:'0 8%',maxWidth:'700px'}}>
+        {/* BG image — heavily darkened + blurred so old-UI text is invisible */}
+        <div style={{position:'absolute',inset:0,backgroundImage:`url(${heroBg})`,backgroundSize:'cover',backgroundPosition:'center 30%',backgroundRepeat:'no-repeat',filter:'brightness(0.07) blur(3px) saturate(2)',transform:'scale(1.05)'}}/>
+
+        {/* Strong solid overlays */}
+        <div style={{position:'absolute',inset:0,background:'rgba(0,0,0,0.55)'}}/>
+        <div style={{position:'absolute',inset:0,background:'linear-gradient(to left, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0.92) 70%, #000 100%)'}}/>
+        <div style={{position:'absolute',inset:0,background:'linear-gradient(to top, #000 0%, transparent 50%)'}}/>
+        <div style={{position:'absolute',top:0,left:0,right:0,height:'120px',background:'linear-gradient(to bottom,#000,transparent)'}}/>
+        {/* Neon tint */}
+        <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse at 60% 50%, rgba(204,255,0,0.04) 0%, transparent 65%)'}}/>
+
+        {/* Subtle grid */}
+        <div style={{position:'absolute',inset:0,backgroundImage:'linear-gradient(rgba(204,255,0,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(204,255,0,0.025) 1px,transparent 1px)',backgroundSize:'50px 50px',pointerEvents:'none'}}/>
+
+        {/* ── HERO CONTENT ── */}
+        <div style={{position:'relative',zIndex:10,padding:'80px 6% 120px',width:'100%',maxWidth:'680px',marginRight:'0'}}>
+
           {/* Badge */}
-          <div style={{display:'inline-flex',alignItems:'center',gap:'8px',background:'rgba(204,255,0,0.12)',border:'1px solid rgba(204,255,0,0.4)',borderRadius:'30px',padding:'6px 18px',marginBottom:'28px',width:'fit-content'}}>
-            <span style={{color:'#ccff00',fontSize:'16px'}}>⚡</span>
-            <span style={{color:'#ccff00',fontSize:'13px',fontWeight:700,fontFamily:ff}}>لياقة الجيل القادم</span>
+          <div style={{display:'inline-flex',alignItems:'center',gap:'8px',background:'rgba(204,255,0,0.1)',border:'1px solid rgba(204,255,0,0.35)',borderRadius:'30px',padding:'5px 16px',marginBottom:'24px'}}>
+            <span style={{color:'#ccff00',fontSize:'14px'}}>⚡</span>
+            <span style={{color:'#ccff00',fontSize:'12px',fontWeight:700,fontFamily:ff}}>لياقة الجيل القادم</span>
           </div>
 
           {/* Headline */}
-          <h1 style={{margin:'0 0 12px',lineHeight:1.1,fontFamily:ff}}>
-            <span style={{display:'block',color:'#fff',fontSize:'clamp(52px,8vw,88px)',fontWeight:900,textShadow:'0 0 40px rgba(255,255,255,0.1)'}}>٢٠ دقيقة.</span>
-            <span style={{display:'block',color:'#ccff00',fontSize:'clamp(52px,8vw,88px)',fontWeight:900,textShadow:'0 0 40px rgba(204,255,0,0.5)',fontStyle:'italic'}}>أقصى تأثير.</span>
+          <h1 style={{margin:'0 0 16px',lineHeight:1.05,fontFamily:ff,padding:0}}>
+            <span style={{display:'block',color:'#ffffff',fontSize:'clamp(48px,7.5vw,84px)',fontWeight:900}}>٢٠ دقيقة.</span>
+            <span style={{display:'block',color:'#ccff00',fontSize:'clamp(48px,7.5vw,84px)',fontWeight:900,textShadow:'0 0 50px rgba(204,255,0,0.4)'}}>أقصى تأثير.</span>
           </h1>
 
-          {/* Sub */}
-          <p style={{color:'rgba(255,255,255,0.75)',fontSize:'clamp(14px,2vw,18px)',lineHeight:1.8,marginBottom:'36px',fontFamily:ff,maxWidth:'520px'}}>
+          {/* Sub-text */}
+          <p style={{color:'rgba(255,255,255,0.7)',fontSize:'clamp(13px,1.6vw,17px)',lineHeight:1.9,margin:'0 0 32px',fontFamily:ff,maxWidth:'480px'}}>
             يُنشط تحفيز العضلات الكهربائي (EMS) 90% من ألياف عضلاتك في آن واحد.<br/>
-            حقق في 20 دقيقة ما يستغرق ساعتين في صالة رياضية تقليدية.
+            حقق في 20 دقيقة ما يستغرق ساعتين في صالة تقليدية.
           </p>
 
-          {/* CTA buttons */}
-          <div style={{display:'flex',gap:'16px',flexWrap:'wrap',alignItems:'center'}}>
-            <button onClick={()=>setScreen('admin')} style={{background:'linear-gradient(135deg,#ccff00,#aae000)',color:'#000',border:'none',padding:'16px 36px',borderRadius:'10px',fontWeight:900,cursor:'pointer',fontFamily:ff,fontSize:'16px',boxShadow:'0 6px 30px rgba(204,255,0,0.5)',display:'flex',alignItems:'center',gap:'10px'}}>
-              <span>احجز جلسة تجريبية</span><span>←</span>
+          {/* CTA */}
+          <div style={{display:'flex',gap:'14px',flexWrap:'wrap'}}>
+            <button onClick={()=>setScreen('admin')} style={{background:'linear-gradient(135deg,#ccff00,#aae000)',color:'#000',border:'none',padding:'15px 32px',borderRadius:'10px',fontWeight:900,cursor:'pointer',fontFamily:ff,fontSize:'15px',boxShadow:'0 6px 28px rgba(204,255,0,0.45)',display:'inline-flex',alignItems:'center',gap:'8px'}}>
+              احجز جلسة تجريبية <span style={{fontSize:'18px'}}>←</span>
             </button>
-            <button onClick={()=>setSection('off') || setScreen('admin')} style={{background:'rgba(255,255,255,0.08)',color:'#fff',border:'1px solid rgba(255,255,255,0.3)',padding:'16px 36px',borderRadius:'10px',fontWeight:700,cursor:'pointer',fontFamily:ff,fontSize:'16px',backdropFilter:'blur(10px)'}}>
+            <button onClick={()=>{setSection('off');setScreen('admin');}} style={{background:'rgba(255,255,255,0.06)',color:'#fff',border:'1px solid rgba(255,255,255,0.25)',padding:'15px 32px',borderRadius:'10px',fontWeight:700,cursor:'pointer',fontFamily:ff,fontSize:'15px'}}>
               عرض العروض
             </button>
           </div>
         </div>
 
-        {/* Motivations ticker - bottom */}
-        <div style={{position:'absolute',bottom:'24px',left:'50%',transform:'translateX(-50%)',zIndex:10,display:'flex',alignItems:'center',gap:'12px'}}>
-          <div style={{height:'1px',width:'60px',background:'rgba(204,255,0,0.4)'}}/>
-          <span style={{color:'rgba(204,255,0,0.8)',fontSize:'13px',fontFamily:ff,fontWeight:600,whiteSpace:'nowrap',animation:'fadeIn 0.5s ease'}}>{MOTTOS[motoIdx]}</span>
-          <div style={{height:'1px',width:'60px',background:'rgba(204,255,0,0.4)'}}/>
-        </div>
-
-        {/* Heartbeat overlay */}
-        <div style={{position:'absolute',bottom:'80px',right:'0',left:'0',zIndex:5,pointerEvents:'none',opacity:0.15}}>
-          <svg viewBox="0 0 1200 80" preserveAspectRatio="none" style={{width:'100%',height:'80px'}}>
-            <path d="M0 40 L200 40 L250 40 L280 10 L320 70 L360 15 L395 40 L450 40 L500 40 L540 8 L580 72 L620 18 L655 40 L700 40 L800 40 L900 40 L1200 40" stroke="#ccff00" strokeWidth="2" fill="none"/>
+        {/* Heartbeat line */}
+        <div style={{position:'absolute',bottom:'96px',left:0,right:0,zIndex:5,pointerEvents:'none',opacity:0.2}}>
+          <svg viewBox="0 0 1200 60" preserveAspectRatio="none" style={{width:'100%',height:'60px'}}>
+            <path d="M0 30 L180 30 L220 30 L250 8 L290 52 L325 10 L358 30 L420 30 L480 30 L520 6 L555 54 L590 12 L622 30 L700 30 L900 30 L1200 30" stroke="#ccff00" strokeWidth="1.5" fill="none"/>
           </svg>
         </div>
 
+        {/* Motivational ticker */}
+        <div style={{position:'absolute',bottom:'70px',left:'50%',transform:'translateX(-50%)',zIndex:10,display:'flex',alignItems:'center',gap:'10px'}}>
+          <div style={{height:'1px',width:'50px',background:'rgba(204,255,0,0.35)'}}/>
+          <span style={{color:'rgba(204,255,0,0.75)',fontSize:'12px',fontFamily:ff,fontWeight:600,whiteSpace:'nowrap'}}>{MOTTOS[motoIdx]}</span>
+          <div style={{height:'1px',width:'50px',background:'rgba(204,255,0,0.35)'}}/>
+        </div>
+
         {/* Stats strip */}
-        <div style={{position:'absolute',bottom:'0',left:'0',right:'0',background:'rgba(0,0,0,0.7)',backdropFilter:'blur(10px)',borderTop:'1px solid rgba(204,255,0,0.15)',padding:'16px 8%',display:'flex',gap:'48px',zIndex:10,flexWrap:'wrap'}}>
+        <div style={{position:'absolute',bottom:0,left:0,right:0,background:'rgba(0,0,0,0.8)',backdropFilter:'blur(12px)',borderTop:'1px solid rgba(204,255,0,0.12)',padding:'14px 6%',display:'flex',gap:'40px',zIndex:10,flexWrap:'wrap',alignItems:'center'}}>
           {[
             {val:String(members.length),label:'مشترك نشط',col:'#ccff00'},
             {val:String(suits.filter(s=>s.status==='avail').length),label:'جهاز EMS متاح',col:'#00e5ff'},
             {val:String(bookings.length),label:'جلسة محجوزة',col:'#00ff88'},
             {val:'٢٠',label:'دقيقة للجلسة',col:'#ff69b4'},
           ].map(s=>(
-            <div key={s.label} style={{display:'flex',alignItems:'center',gap:'12px'}}>
-              <div style={{color:s.col,fontSize:'30px',fontWeight:900,fontFamily:fo,lineHeight:1}}>{s.val}</div>
-              <div style={{color:'#777',fontSize:'12px',fontFamily:ff}}>{s.label}</div>
+            <div key={s.label} style={{display:'flex',alignItems:'center',gap:'10px'}}>
+              <div style={{color:s.col,fontSize:'28px',fontWeight:900,fontFamily:fo,lineHeight:1}}>{s.val}</div>
+              <div style={{color:'#666',fontSize:'11px',fontFamily:ff,lineHeight:1.3}}>{s.label}</div>
             </div>
           ))}
         </div>
