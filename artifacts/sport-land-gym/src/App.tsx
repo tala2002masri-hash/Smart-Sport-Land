@@ -993,45 +993,115 @@ ${isGoalMuscle?`⚡ بروتين واي (Whey Protein)
 
           {portMember&&(
             <div className="print-zone" style={{background:'#fff',color:'#000',borderRadius:'18px',overflow:'hidden',padding:'36px',border:'2px solid #eee',direction:'rtl',fontFamily:ff}}>
-              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'28px',borderBottom:'4px solid #ccff00',paddingBottom:'18px'}}>
+
+              {/* ── صفحة 1: رأس + بيانات + قياسات ── */}
+              {/* Header */}
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px',borderBottom:'4px solid #ccff00',paddingBottom:'16px'}}>
                 <div style={{display:'flex',alignItems:'center',gap:'16px'}}>
                   <img src={logoImg} alt="Logo" style={{width:'60px',height:'60px',borderRadius:'50%',objectFit:'cover',border:'3px solid #ccff00'}}/>
                   <div>
                     <div style={{fontFamily:fo,fontSize:'20px',fontWeight:900,color:'#000'}}>SMART SPORT LAND</div>
                     <div style={{color:'#888',fontSize:'11px',fontFamily:fo,letterSpacing:'2px'}}>EMS TRAINING · NABLUS · PALESTINE</div>
+                    <div style={{color:'#aaa',fontSize:'10px',fontFamily:ff,marginTop:'2px'}}>تاريخ الطباعة: {new Date().toLocaleDateString('ar-EG')}</div>
                   </div>
                 </div>
-                <img src={portMember.img||logoImg} style={{width:'110px',height:'110px',borderRadius:'12px',objectFit:'cover',border:'3px solid #000'}} alt=""/>
+                <img src={portMember.img||logoImg} style={{width:'100px',height:'100px',borderRadius:'12px',objectFit:'cover',border:'3px solid #000'}} alt=""/>
               </div>
-              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'18px',marginBottom:'22px'}}>
-                <div>
-                  {[['الاسم',portMember.name],['الهدف',portMember.goal],['المدرب',portMember.coach],portMember.chronic&&['أمراض',portMember.chronic],portMember.bone&&['إصابات',portMember.bone],['تاريخ التسجيل',portMember.date]].filter(Boolean).map((r,i)=>r&&<p key={i} style={{margin:'5px 0',fontFamily:ff}}><b>{(r as string[])[0]}:</b> {(r as string[])[1]}</p>)}
+
+              {/* Personal + Financial info */}
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'18px',marginBottom:'18px'}}>
+                <div style={{background:'#fafafa',padding:'14px',borderRadius:'10px',border:'1px solid #eee'}}>
+                  <div style={{fontWeight:900,fontSize:'13px',borderBottom:'2px solid #ccff00',paddingBottom:'6px',marginBottom:'10px',fontFamily:ff}}>البيانات الشخصية</div>
+                  {[['الاسم',portMember.name],['الهدف',portMember.goal],['المدرب',portMember.coach||'-'],portMember.chronic?['أمراض مزمنة',portMember.chronic]:null,portMember.bone?['إصابات هيكلية',portMember.bone]:null,['تاريخ التسجيل',portMember.date]].filter(Boolean).map((r,i)=>r&&<p key={i} style={{margin:'4px 0',fontFamily:ff,fontSize:'12px'}}><b style={{color:'#555'}}>{(r as string[])[0]}:</b> {(r as string[])[1]}</p>)}
                 </div>
-                <div style={{background:'#f8f8f8',padding:'14px',borderRadius:'10px'}}>
-                  <p style={{margin:'5px 0',fontFamily:ff}}><b>الجلسات المتبقية:</b> <span style={{color:'#00a',fontWeight:900,fontSize:'16px'}}>{portMember.rem_sess}</span></p>
-                  <p style={{margin:'5px 0',fontFamily:ff}}><b>الدين:</b> <span style={{color:'#c00',fontWeight:900,fontSize:'16px'}}>{portMember.debt} ₪</span></p>
-                  <p style={{margin:'5px 0',fontFamily:ff}}><b>المدفوع:</b> {portMember.paid} ₪</p>
-                  <p style={{margin:'5px 0',fontFamily:ff}}><b>الباقة:</b> {portMember.total} ₪</p>
+                <div style={{background:'#fafafa',padding:'14px',borderRadius:'10px',border:'1px solid #eee'}}>
+                  <div style={{fontWeight:900,fontSize:'13px',borderBottom:'2px solid #00e5ff',paddingBottom:'6px',marginBottom:'10px',fontFamily:ff}}>الوضع المالي</div>
+                  <p style={{margin:'4px 0',fontFamily:ff,fontSize:'12px'}}><b style={{color:'#555'}}>قيمة الباقة:</b> {portMember.total} ₪</p>
+                  <p style={{margin:'4px 0',fontFamily:ff,fontSize:'12px'}}><b style={{color:'#555'}}>المبلغ المدفوع:</b> <span style={{color:'#006600',fontWeight:900}}>{portMember.paid} ₪</span></p>
+                  <p style={{margin:'4px 0',fontFamily:ff,fontSize:'12px'}}><b style={{color:'#555'}}>الدين المتبقي:</b> <span style={{color:'#cc0000',fontWeight:900}}>{portMember.debt} ₪</span></p>
+                  <p style={{margin:'4px 0',fontFamily:ff,fontSize:'12px'}}><b style={{color:'#555'}}>الجلسات المتبقية:</b> <span style={{color:'#000099',fontWeight:900,fontSize:'16px'}}>{portMember.rem_sess}</span></p>
                 </div>
               </div>
-              <hr style={{border:'1px solid #eee',margin:'18px 0'}}/>
-              <h3 style={{borderRight:'5px solid #ccff00',paddingRight:'10px',fontFamily:ff}}>📏 القياسات</h3>
-              <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:'8px',marginBottom:'18px'}}>
-                {[{l:'الوزن',v:portMember.lab.w?portMember.lab.w+' كغم':'-'},{l:'الطول',v:portMember.lab.h?portMember.lab.h+' سم':'-'},{l:'الرقبة',v:portMember.lab.neck?portMember.lab.neck+' سم':'-'},{l:'الخصر',v:portMember.lab.waist?portMember.lab.waist+' سم':'-'},{l:'الصدر',v:portMember.lab.chest?portMember.lab.chest+' سم':'-'},{l:'الأرداف',v:portMember.lab.hips?portMember.lab.hips+' سم':'-'},{l:'الدهون',v:portMember.lab.fat||'-'},{l:'BMI',v:portMember.lab.bmi||'-'},{l:'العضل',v:portMember.lab.mus||'-'},{l:'الذراع ي',v:portMember.lab.armR?portMember.lab.armR+' سم':'-'}].map((it,i)=>(
-                  <div key={i} style={{background:'#f5f5f5',padding:'8px',borderRadius:'8px',textAlign:'center'}}><div style={{fontSize:'10px',color:'#888'}}>{it.l}</div><div style={{fontWeight:'bold',marginTop:'3px',fontSize:'12px'}}>{it.v}</div></div>
+
+              {/* Measurements */}
+              <h3 style={{borderRight:'5px solid #ccff00',paddingRight:'10px',fontFamily:ff,marginBottom:'10px',pageBreakAfter:'avoid'}}>📏 القياسات الجسدية</h3>
+              <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:'8px',marginBottom:'18px',pageBreakInside:'avoid'}}>
+                {[{l:'الوزن',v:portMember.lab.w?portMember.lab.w+' كغم':'-'},{l:'الطول',v:portMember.lab.h?portMember.lab.h+' سم':'-'},{l:'الرقبة',v:portMember.lab.neck?portMember.lab.neck+' سم':'-'},{l:'الخصر',v:portMember.lab.waist?portMember.lab.waist+' سم':'-'},{l:'الصدر',v:portMember.lab.chest?portMember.lab.chest+' سم':'-'},{l:'الأرداف',v:portMember.lab.hips?portMember.lab.hips+' سم':'-'},{l:'الفخذ ي',v:portMember.lab.thighR?portMember.lab.thighR+' سم':'-'},{l:'الذراع ي',v:portMember.lab.armR?portMember.lab.armR+' سم':'-'},{l:'الدهون %',v:portMember.lab.fat||'-'},{l:'BMI',v:portMember.lab.bmi||'-'}].map((it,i)=>(
+                  <div key={i} style={{background:'#f5f5f5',padding:'8px',borderRadius:'8px',textAlign:'center',border:'1px solid #eee'}}>
+                    <div style={{fontSize:'9px',color:'#888',fontFamily:ff}}>{it.l}</div>
+                    <div style={{fontWeight:'bold',marginTop:'3px',fontSize:'12px',fontFamily:fo}}>{it.v}</div>
+                  </div>
                 ))}
               </div>
-              {portMember.history?.length>0&&<><hr style={{border:'1px solid #eee',margin:'18px 0'}}/><h3 style={{borderRight:'5px solid #ccff00',paddingRight:'10px',fontFamily:ff}}>📜 سجل التطور</h3><table style={{width:'100%',borderCollapse:'collapse',fontSize:'12px'}}><thead><tr style={{background:'#f0f0f0'}}>{['التاريخ','الوزن','الرقبة','الخصر','الأرداف','الدهون','BMI'].map(h=><th key={h} style={{padding:'7px',textAlign:'right',border:'1px solid #ddd',fontFamily:ff}}>{h}</th>)}</tr></thead><tbody>{[...portMember.history].reverse().map((h,i)=><tr key={i}>{[h.date,h.w,h.neck||'-',h.waist,h.hips||'-',h.fat,h.bmi].map((v,j)=><td key={j} style={{padding:'7px',border:'1px solid #eee',fontFamily:ff}}>{v}</td>)}</tr>)}</tbody></table></>}
-              {portMember.photos?.length>0&&<><hr style={{border:'1px solid #eee',margin:'18px 0'}}/><h3 style={{borderRight:'5px solid #00ff88',paddingRight:'10px',fontFamily:ff}}>📸 صور التطور</h3><div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'8px'}}>{portMember.photos.map((p,i)=><div key={i} style={{textAlign:'center'}}><img src={p.img} alt="" style={{width:'100%',height:'90px',objectFit:'cover',borderRadius:'8px',border:'1px solid #eee'}}/><div style={{fontSize:'9px',color:'#888',marginTop:'3px'}}>{p.date.slice(0,16)}</div><div style={{fontSize:'9px',color:'#555'}}>{p.note}</div></div>)}</div></>}
-              <hr style={{border:'1px solid #eee',margin:'18px 0'}}/>
-              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'22px'}}>
-                <div><h4 style={{fontFamily:ff,borderRight:'3px solid #00ff88',paddingRight:'8px'}}>🥗 خطة التغذية</h4><p style={{whiteSpace:'pre-wrap',background:'#f8f8f8',padding:'12px',borderRadius:'8px',fontSize:'11px',fontFamily:ff}}>{portMember.diet||'لم تُحدَّد خطة'}</p></div>
-                <div><h4 style={{fontFamily:ff,borderRight:'3px solid #00e5ff',paddingRight:'8px'}}>⚡ خطة التدريب</h4><p style={{whiteSpace:'pre-wrap',background:'#f8f8f8',padding:'12px',borderRadius:'8px',fontSize:'11px',fontFamily:ff}}>{portMember.train||'لم تُحدَّد خطة'}</p></div>
+
+              {/* History table — may span pages, allow breaks between rows */}
+              {portMember.history?.length>0&&(
+                <>
+                  <h3 style={{borderRight:'5px solid #ccff00',paddingRight:'10px',fontFamily:ff,pageBreakAfter:'avoid'}}>📜 سجل التطور</h3>
+                  <table style={{width:'100%',borderCollapse:'collapse',fontSize:'11px',marginBottom:'18px'}}>
+                    <thead><tr style={{background:'#f0f0f0'}}>{['التاريخ','الوزن','الرقبة','الخصر','الأرداف','الدهون','BMI'].map(h=><th key={h} style={{padding:'6px',textAlign:'right',border:'1px solid #ddd',fontFamily:ff}}>{h}</th>)}</tr></thead>
+                    <tbody>{[...portMember.history].reverse().map((h,i)=><tr key={i} style={{pageBreakInside:'avoid'}}>{[h.date,h.w?h.w+' كغم':'-',h.neck?h.neck+' سم':'-',h.waist?h.waist+' سم':'-',h.hips?h.hips+' سم':'-',h.fat||'-',h.bmi||'-'].map((v,j)=><td key={j} style={{padding:'6px',border:'1px solid #eee',fontFamily:ff}}>{v}</td>)}</tr>)}</tbody>
+                  </table>
+                </>
+              )}
+
+              {/* Progress photos — new page if photos exist */}
+              {portMember.photos?.length>0&&(
+                <div className="print-page-break">
+                  {/* Repeat mini-header on new page */}
+                  <div style={{display:'flex',alignItems:'center',gap:'12px',marginBottom:'16px',borderBottom:'2px solid #ccff00',paddingBottom:'10px'}}>
+                    <img src={logoImg} alt="" style={{width:'36px',height:'36px',borderRadius:'50%',objectFit:'cover'}}/>
+                    <div style={{fontFamily:fo,fontSize:'13px',fontWeight:900}}>SMART SPORT LAND — صور التطور: {portMember.name}</div>
+                  </div>
+                  <h3 style={{borderRight:'5px solid #00ff88',paddingRight:'10px',fontFamily:ff,pageBreakAfter:'avoid'}}>📸 صور التطور</h3>
+                  <div className="photo-grid" style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'10px',marginBottom:'18px'}}>
+                    {portMember.photos.map((p,i)=>(
+                      <div key={i} style={{textAlign:'center',pageBreakInside:'avoid',breakInside:'avoid'}}>
+                        <img src={p.img} alt="" style={{width:'100%',height:'110px',objectFit:'cover',borderRadius:'8px',border:'1px solid #ddd',display:'block'}}/>
+                        <div style={{fontSize:'9px',color:'#777',marginTop:'4px',fontFamily:fo}}>{p.date.slice(0,16)}</div>
+                        {p.note&&<div style={{fontSize:'9px',color:'#555',fontFamily:ff,marginTop:'2px'}}>{p.note}</div>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Plans — each on its own page */}
+              {(portMember.diet||portMember.train)&&(
+                <div className="print-page-break">
+                  {/* Mini header */}
+                  <div style={{display:'flex',alignItems:'center',gap:'12px',marginBottom:'16px',borderBottom:'2px solid #ccff00',paddingBottom:'10px'}}>
+                    <img src={logoImg} alt="" style={{width:'36px',height:'36px',borderRadius:'50%',objectFit:'cover'}}/>
+                    <div style={{fontFamily:fo,fontSize:'13px',fontWeight:900}}>SMART SPORT LAND — الخطط: {portMember.name}</div>
+                  </div>
+
+                  {portMember.diet&&(
+                    <>
+                      <h3 style={{borderRight:'5px solid #00bb55',paddingRight:'10px',fontFamily:ff,pageBreakAfter:'avoid'}}>🥗 خطة التغذية والمكملات الغذائية</h3>
+                      <div className="plan-block" style={{whiteSpace:'pre-wrap',background:'#fafff8',padding:'14px',borderRadius:'8px',fontSize:'10pt',fontFamily:ff,lineHeight:'1.8',border:'1px solid #d0ead0',marginBottom:'18px',pageBreakInside:'auto'}}>{portMember.diet}</div>
+                    </>
+                  )}
+
+                  {portMember.train&&(
+                    <div className="print-page-break">
+                      {/* Mini header */}
+                      <div style={{display:'flex',alignItems:'center',gap:'12px',marginBottom:'16px',borderBottom:'2px solid #0088aa',paddingBottom:'10px'}}>
+                        <img src={logoImg} alt="" style={{width:'36px',height:'36px',borderRadius:'50%',objectFit:'cover'}}/>
+                        <div style={{fontFamily:fo,fontSize:'13px',fontWeight:900}}>SMART SPORT LAND — التدريب: {portMember.name}</div>
+                      </div>
+                      <h3 style={{borderRight:'5px solid #0088bb',paddingRight:'10px',fontFamily:ff,pageBreakAfter:'avoid'}}>⚡ برنامج التدريب على الأجهزة + EMS</h3>
+                      <div className="plan-block" style={{whiteSpace:'pre-wrap',background:'#f8fbff',padding:'14px',borderRadius:'8px',fontSize:'10pt',fontFamily:ff,lineHeight:'1.8',border:'1px solid #c0d8ea',marginBottom:'18px',pageBreakInside:'auto'}}>{portMember.train}</div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Footer */}
+              <div className="print-footer" style={{marginTop:'24px',borderTop:'2px solid #ccff00',paddingTop:'10px',display:'flex',justifyContent:'space-between',alignItems:'center',fontSize:'10px',color:'#aaa'}}>
+                <span style={{fontFamily:fo}}>SMART SPORT LAND © {new Date().getFullYear()}</span>
+                <span style={{fontFamily:ff}}>نابلس · فلسطين | {portMember.name}</span>
               </div>
-              <div style={{marginTop:'20px',borderTop:'2px solid #ccff00',paddingTop:'10px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                <div style={{fontSize:'10px',color:'#aaa',fontFamily:fo}}>SMART SPORT LAND © 2025</div>
-                <div style={{fontSize:'10px',color:'#aaa',fontFamily:ff}}>نابلس · فلسطين</div>
-              </div>
+
             </div>
           )}
         </div>

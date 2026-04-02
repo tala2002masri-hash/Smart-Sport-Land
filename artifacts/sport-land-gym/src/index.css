@@ -87,7 +87,109 @@ body {
 ::-webkit-scrollbar-thumb { background: #ccff00; border-radius: 4px; }
 
 @media print {
+  /* ── hide UI chrome ── */
   .no-print { display: none !important; }
-  body { background: #fff !important; color: #000 !important; direction: rtl; }
-  .print-zone { display: block !important; }
+
+  /* ── reset page ── */
+  * { box-sizing: border-box; }
+  @page {
+    size: A4 portrait;
+    margin: 18mm 14mm 18mm 14mm;
+  }
+
+  html, body {
+    background: #fff !important;
+    color: #000 !important;
+    direction: rtl;
+    font-family: 'Cairo', 'Tajawal', Arial, sans-serif;
+    font-size: 12pt;
+    line-height: 1.6;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ── make the print zone fill the page ── */
+  .print-zone {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: #fff !important;
+    color: #000 !important;
+    page-break-before: avoid;
+  }
+
+  /* ── section headings never orphaned ── */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* ── keep table rows together where possible ── */
+  tr, img, figure {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* ── cards / info blocks ── */
+  .print-zone > div,
+  .print-zone section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* ── explicit page breaks between major sections ── */
+  .print-page-break {
+    page-break-before: always;
+    break-before: always;
+    padding-top: 8mm;
+  }
+
+  /* ── keep tables readable ── */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 10pt;
+  }
+  th, td {
+    border: 1px solid #ccc !important;
+    padding: 5px 8px !important;
+    text-align: right !important;
+  }
+  thead { background: #f5f5f5 !important; }
+
+  /* ── progress photo grid: 4 per row, never broken ── */
+  .photo-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 6px !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* ── plan text blocks ── */
+  .plan-block {
+    page-break-inside: auto;
+    break-inside: auto;
+    white-space: pre-wrap;
+    font-size: 10pt;
+    line-height: 1.7;
+  }
+
+  /* ── footer on every page via fixed positioning removed; use page margin box ── */
+  .print-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-top: 1px solid #ccc;
+    padding: 4px 14mm;
+    font-size: 9pt;
+    color: #888;
+    display: flex;
+    justify-content: space-between;
+  }
 }
